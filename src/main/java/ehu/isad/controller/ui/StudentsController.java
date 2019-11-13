@@ -1,6 +1,8 @@
 package ehu.isad.controller.ui;
 
 import ehu.isad.Main;
+import ehu.isad.db.DBKudeatzaile;
+import ehu.isad.db.StudentsKud;
 import ehu.isad.model.StudentsModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +15,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
@@ -53,8 +56,7 @@ public class StudentsController implements Initializable {
 
     // add your data here from any source
     private ObservableList<StudentsModel> studentsModels = FXCollections.observableArrayList(
-            new StudentsModel(1, "Jon", "Guridi", "photo.jpg"),
-            new StudentsModel(2, "Ane", "Bengoa", "security.png")
+            StudentsKud.getInstantzia().lortuIkasleak()
     );
 
 
@@ -62,10 +64,13 @@ public class StudentsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        tbData.setEditable(true);
         //make sure the property value factory should be exactly same as the e.g getStudentId from your model class
         studentId.setCellValueFactory(new PropertyValueFactory<>("StudentId"));
         firstName.setCellValueFactory(new PropertyValueFactory<>("FirstName"));
         lastName.setCellValueFactory(new PropertyValueFactory<>("LastName"));
+
+        lastName.setCellFactory(TextFieldTableCell.forTableColumn());
 
         image.setCellValueFactory(new PropertyValueFactory<StudentsModel, Image>("image"));
 
@@ -79,6 +84,7 @@ public class StudentsController implements Initializable {
                     setGraphic(imageview);
                     setAlignment(Pos.CENTER);
 
+                    // INPORTANTEA
                     tbData.refresh();
             }
         };
@@ -105,11 +111,16 @@ public class StudentsController implements Initializable {
 //            e.printStackTrace();
 //        }
 
-        studentsModels.add(new StudentsModel(studentid++,"meme","last", "security.png"));
+        studentsModels.add(new StudentsModel(studentid++,"meme","last", "memes.jpg"));
 
     }
 
     public void gorde(ActionEvent actionEvent) {
         System.out.println("gorde");
+        DBKudeatzaile dbKud = DBKudeatzaile.getInstantzia();
+        for (StudentsModel s: studentsModels) {
+            dbKud.execSQL("INSERT INTO studentsModel(firstName, lastName, imagePath) VALUES ('" + s.getFirstName() + "', '" + s.getLastName() + "', '" + s.getImagePath() + "');");
+        }
+
     }
 }

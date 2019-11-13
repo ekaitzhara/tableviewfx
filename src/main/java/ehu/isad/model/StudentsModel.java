@@ -15,6 +15,7 @@ public class StudentsModel {
         this.firstName = firstName;
         this.lastName = lastName;
         this.image = new Image(imagePath);
+        this.imagePath = imagePath;
     }
 
     public int getStudentId() {
@@ -43,5 +44,9 @@ public class StudentsModel {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }
